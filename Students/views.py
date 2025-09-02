@@ -55,34 +55,19 @@ class TaskList(APIView):
             return Response("Task added")
         else:
             return Response(n_task.errors)
-    def get(self,request):
+    def get(self,request,task_id=None):
 
-        task=Task.objects.all()
-        n_task=Task_Serializer(task,many=True).data
+        if task_id==None:
+            task=Task.objects.all()
+            n_task=Task_Serializer(task,many=True).data
 
-        return Response(n_task)
-    
-class TaskList_By_ID(APIView):
-
-    def get(self,request,task_id):
-
-        task=Task.objects.get(id=task_id)
-
-        n_task=Task_Serializer(task).data
-
-        return Response(n_task)
-    
-    def patch(self,requesrt,task_id):
-        task=Task.objects.get(id=task_id)
-
-        n_task=Task_Serializer(task,data=requesrt.data,partial=True)
-
-        if n_task.is_valid():
-            n_task.save()
-            return Response("Task Updated")
+            return Response(n_task)
         else:
-            return Response(n_task.errors)
-    def put(self,request,task_id):
+            task=Task.objects.get(id=task_id)
+            n_task=Task_Serializer(task).data
+
+            return Response(n_task)
+    def patch(self,request,task_id):
 
         task=Task.objects.get(id=task_id)
 
@@ -93,11 +78,63 @@ class TaskList_By_ID(APIView):
             return Response("Task Updated")
         else:
             return Response(n_task.errors)
-        
+    
+    def put(self,request,task_id):
+
+        task=Task.objects.get(id=task_id)
+
+        n_task=Task_Serializer(task,data=request.data,partial=True)
+
+        if n_task.is_valid():
+            n_task.save()
+            return Response("Task Updated")
+        else:
+            return Response("n_task.errors")
+    
     def delete(self,request,task_id):
 
         task=Task.objects.get(id=task_id)
+
         task.delete()
 
         return Response("Task Deleted Succesfully")
+    
+# class TaskList_By_ID(APIView):
+
+#     def get(self,request,task_id):
+
+#         task=Task.objects.get(id=task_id)
+
+#         n_task=Task_Serializer(task).data
+
+#         return Response(n_task)
+    
+#     def patch(self,requesrt,task_id):
+#         task=Task.objects.get(id=task_id)
+
+#         n_task=Task_Serializer(task,data=requesrt.data,partial=True)
+
+#         if n_task.is_valid():
+#             n_task.save()
+#             return Response("Task Updated")
+#         else:
+#             return Response(n_task.errors)
+#     def put(self,request,task_id):
+
+#         task=Task.objects.get(id=task_id)
+
+#         n_task=Task_Serializer(task,data=request.data,partial=True)
+
+#         if n_task.is_valid():
+#             n_task.save()
+#             return Response("Task Updated")
+#         else:
+#             return Response(n_task.errors)
+        
+#     def delete(self,request,task_id):
+
+#         task=Task.objects.get(id=task_id)
+#         task.delete()
+
+#         return Response("Task Deleted Succesfully")
 
