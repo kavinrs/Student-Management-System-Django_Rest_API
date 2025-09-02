@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Student,Task
-from .serializers import Task_Serializer
+from .models import *
+from .serializers import *
 
 class StudentList(APIView):
     def get(self,request):
@@ -133,8 +133,43 @@ class TaskList(APIView):
         
 #     def delete(self,request,task_id):
 
+
 #         task=Task.objects.get(id=task_id)
 #         task.delete()
 
 #         return Response("Task Deleted Succesfully")
 
+
+
+class StudentsMarkList(APIView):
+
+    def post(self,request):
+
+        total=request.data["english_marks"]+request.data["maths_marks"]+request.data["science_marks"]+request.data["tamil_marks"]+request.data["social_marks"]
+
+        average=total/5
+
+        if request.data["english_marks"]>35 and request.data["maths_marks"]>35 and request.data["science_marks"]>35 and request.data["tamil_marks"]>35 and request.data["social_marks"]>35:
+            score=True
+        else:
+            score=True
+        
+        stu=Students_MarK(english_marks=request.data["english_marks"],maths_marks=request.data["maths_marks"],
+        science_marks=request.data["science_marks"],tamil_marks=request.data["tamil_marks"],
+        social_marks=request.data["social_marks"],total=total,average=average,score=score)
+
+        stu.save()
+
+        return Response("Student Marks Added")
+    def get(self,request,stu_id=None):
+
+        if stu_id==None:
+            stu=Students_MarK.objects.all()
+            n_stu=Students_mark_Serializer(stu,many=True).data
+
+            return Response(n_stu)
+        else:
+            stu=Students_MarK.objects.get(id=stu_id)
+            n_stu=Students_mark_Serializer(stu).data
+
+            return Response(n_stu)
