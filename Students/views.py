@@ -3,8 +3,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
+from rest_framework.permissions import IsAuthenticated
 
 class StudentList(APIView):
+
+    permission_classes=[IsAuthenticated]
     def get(self,request):
 
         # student_back=Student.objects.all()
