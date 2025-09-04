@@ -9,6 +9,7 @@ class Student(models.Model):
         return self.name
 
 class Task(models.Model):
+    student_reference=models.ForeignKey(Student,related_name="all_task",null=True,on_delete=models.CASCADE)
     task_name=models.CharField(max_length=100)
     description=models.TextField()
 

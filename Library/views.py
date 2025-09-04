@@ -8,12 +8,22 @@ class BookViewSet(ModelViewSet):
     queryset=Book.objects.all()
     serializer_class=BookSerializer
 
-class BookList(generics.ListCreateAPIView):
+class LaptopList(generics.ListCreateAPIView):
+
+    def get_queryset(self):
+        return Laptop.objects.filter(brand="HP")
+    
+    def perform_create(self, serializer):
+        serializer.save(processor="i5")
 
     queryset=Laptop.objects.all()
     serializer_class=LaptopSerializer
 
-class BookList2(generics.RetrieveUpdateDestroyAPIView):
+class LaptopList2(generics.RetrieveUpdateDestroyAPIView):
+    
+    def perform_update(self, serializer):
+        serializer.save(processor="i7")
 
     queryset=Laptop.objects.all()
     serializer_class=LaptopSerializer
+

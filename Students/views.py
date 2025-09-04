@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import *
 from .serializers import *
@@ -6,17 +7,21 @@ from .serializers import *
 class StudentList(APIView):
     def get(self,request):
 
-        student_back=Student.objects.all()
-        student_list=[]
-        for i in student_back:
-            stu_dic={
-                "id":i.id,
-                "name":i.name,
-                "age":i.age,
-                "grade":i.grade
-            }
-            student_list.append(stu_dic)
-        return Response(student_list)
+        # student_back=Student.objects.all()
+        # student_list=[]
+        # for i in student_back:
+        #     stu_dic={
+        #         "id":i.id,
+        #         "name":i.name,
+        #         "age":i.age,
+        #         "grade":i.grade
+        #     }
+        #     student_list.append(stu_dic)
+        # return Response(student_list)
+        task=Student.objects.all()
+        n_task=Student_Task_Serializer(task,many=True).data
+
+        return Response(n_task)
     def post(self,request):
 
         print(request.data)
@@ -59,12 +64,12 @@ class TaskList(APIView):
 
         if task_id==None:
             task=Task.objects.all()
-            n_task=Task_Serializer(task,many=True).data
+            n_task=Task_Data_Serializer(task,many=True).data
 
             return Response(n_task)
         else:
             task=Task.objects.get(id=task_id)
-            n_task=Task_Serializer(task).data
+            n_task=Task_Data_Serializer(task).data
 
             return Response(n_task)
     def patch(self,request,task_id):
@@ -199,3 +204,54 @@ class StudentsMarkList(APIView):
         stu.delete()
 
         return Response("Students MarksDeleted Successfully")
+    
+@api_view(["GET","POST"])
+def task_api(request):
+
+    if request.method=="GET":
+        task=Task.objects.all()
+
+        n_task=Task_Serializer(task,many=True).data
+
+        return Response(n_task)
+    
+    if request.method=="POST":
+
+        task=Task_Serializer(data=request.data)
+
+        if task.is_valid():
+            task.save()
+            return Response("New Task Added")
+        else:
+            return Response(task.errors)
+
+@api_view(["GET","PUT","DELETE"])
+def task_api_byID(request,task_id):
+
+    if request.method=="GET":
+        task=Task.objects.get(id=task_id)
+
+        n_task=Task_Serializer(task).data
+        
+        return Response(n_task)
+    
+    if request.method=="PUT":
+        task=Task.objects.get(id=task_id)
+
+        n_task=Task_Serializer(task,data=request.data,partial=True)
+
+        if n_task.is_valid():
+            n_task.save()
+            return Response("Task Updated")
+        else:
+            return Response(n_task.errors)
+        
+    if request.method=="DELETE":
+
+        task=Task.objects.get(id=task_id)
+
+        task.delete()
+
+        return Response("Task Deleted Successfully")
+
+        

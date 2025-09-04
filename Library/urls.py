@@ -4,6 +4,6 @@ from .views import *
 
 urlpatterns = [
     path("rout/",include(router.urls)),
-    path("laptop/",BookList.as_view()),
-    path("laptop/<int:pk>/",BookList2.as_view())
+    path("laptop/",LaptopList.as_view()),
+    path("laptop/<int:pk>/",LaptopList2.as_view())
 ]
